@@ -127,7 +127,7 @@ function HomeForTheHolidaysScreenplay:travelHome(pPlayer)
 		return
 	end
 
-	if ((CreatureObject(pPlayer):isInCombat()) then
+	if (CreatureObject(pPlayer):isInCombat()) then
 		CreatureObject(pPlayer):sendSystemMessage("Unable to travel home while in combat.")			
 		return
 	end
