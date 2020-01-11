@@ -126,6 +126,11 @@ function HomeForTheHolidaysScreenplay:travelHome(pPlayer)
 		CreatureObject(pPlayer):sendSystemMessage("Unable to switch zone.  Necessary zone was not enabled.")	
 		return
 	end
+
+	if (CreatureObject(pPlayer):isInCombat()) then
+		CreatureObject(pPlayer):sendSystemMessage("Unable to travel home while in combat.")			
+		return
+	end
 	
 	SceneObject(pPlayer):switchZone(zone, xRef, 0, yRef, 0)
 end
