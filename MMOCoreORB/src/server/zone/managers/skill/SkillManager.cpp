@@ -410,12 +410,40 @@ bool SkillManager::awardSkill(const String& skillName, CreatureObject* creature,
 
 		MissionManager* missionManager = creature->getZoneServer()->getMissionManager();
 
+		int oldReward = 0;	
+		int newReward = 0;
+		int missionType = 1;
+
 		if (skill->getSkillName() == "force_title_jedi_rank_02") {
-			if (missionManager != NULL)
-				missionManager->addPlayerToBountyList(creature->getObjectID(), ghost->calculateBhReward());
+			if (missionManager != NULL) {
+				if (!missionManager->hasPlayerBountyTargetInList(creature->getObjectID())) {
+					missionManager->addPlayerToBountyList(creature->getObjectID(), ghost->calculateBhReward(), missionType); // Type 1 for Jedi mission
+				} else {
+					if ((missionManager->getPlayerBountyType(creature->getObjectID())) == 2) { // If player has an existing Infamy mission, check to see if a jedi mission reward would be greater, and if so, change their mission type and update the reward
+						oldReward = ghost->calculateBhInfamyReward();
+						newReward = ghost->calculateBhReward();
+						if (newReward > oldReward){
+							missionManager->updatePlayerBountyReward(creature->getObjectID(), newReward, missionType);
+							missionManager->updatePlayerBountyType(creature->getObjectID(), missionType);
+						}
+					}
+				}
+			}
 		} else if (skill->getSkillName().contains("force_discipline")) {
-			if (missionManager != NULL)
-				missionManager->updatePlayerBountyReward(creature->getObjectID(), ghost->calculateBhReward());
+			if (missionManager != NULL) {
+				if ((missionManager->getPlayerBountyType(creature->getObjectID())) == 2) { // If player has an existing Infamy mission, check to see if a jedi mission reward would be greater, and if so, change their mission type and update the reward
+					oldReward = ghost->calculateBhInfamyReward();
+					newReward = ghost->calculateBhReward();
+		
+					if (newReward > oldReward){
+						missionManager->updatePlayerBountyReward(creature->getObjectID(), newReward, missionType);
+						missionManager->updatePlayerBountyType(creature->getObjectID(), missionType);
+					}
+				} else {
+						missionManager->updatePlayerBountyReward(creature->getObjectID(), ghost->calculateBhReward(), missionType);
+						missionManager->updatePlayerBountyType(creature->getObjectID(), missionType);
+				}
+			}
 		} else if (skill->getSkillName().contains("squadleader")) {
 			Reference<GroupObject*> group = creature->getGroup();
 
@@ -565,12 +593,31 @@ bool SkillManager::surrenderSkill(const String& skillName, CreatureObject* creat
 
 		MissionManager* missionManager = creature->getZoneServer()->getMissionManager();
 
+		int oldReward = 0;	
+		int newReward = 0;
+		int missionType = 1;
+
 		if (skill->getSkillName() == "force_title_jedi_rank_02") {
-			if (missionManager != NULL)
-				missionManager->removePlayerFromBountyList(creature->getObjectID());
+			if (missionManager != NULL) {
+				if ((missionManager->getPlayerBountyType(creature->getObjectID())) == 1) {
+					missionManager->removePlayerFromBountyList(creature->getObjectID());
+				}
+			}
 		} else if (skill->getSkillName().contains("force_discipline")) {
-			if (missionManager != NULL)
-				missionManager->updatePlayerBountyReward(creature->getObjectID(), ghost->calculateBhReward());
+			if (missionManager != NULL) {
+				if ((missionManager->getPlayerBountyType(creature->getObjectID())) == 2) { // If player has an existing Infamy mission, check to see if a jedi mission reward would be greater, and if so, change their mission type and update the reward
+					oldReward = ghost->calculateBhInfamyReward();
+					newReward = ghost->calculateBhReward();
+		
+					if (newReward > oldReward){
+						missionManager->updatePlayerBountyReward(creature->getObjectID(), newReward, missionType);
+						missionManager->updatePlayerBountyType(creature->getObjectID(), missionType);
+					}
+				} else {
+						missionManager->updatePlayerBountyReward(creature->getObjectID(), ghost->calculateBhReward(), missionType);
+						missionManager->updatePlayerBountyType(creature->getObjectID(), missionType);
+				}
+			}
 		} else if (skill->getSkillName().contains("squadleader")) {
 			Reference<GroupObject*> group = creature->getGroup();
 

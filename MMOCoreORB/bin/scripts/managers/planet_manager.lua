@@ -715,3 +715,8 @@ kashyyyk_main = {
 	weatherEnabled = 0,
 	gcwEnabled = 0,
 }
+
+coronet_underground = {
+	weatherEnabled = 0,
+	gcwEnabled = 0,
+}

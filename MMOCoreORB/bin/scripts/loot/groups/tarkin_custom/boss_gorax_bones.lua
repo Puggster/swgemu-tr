@@ -3,7 +3,7 @@ boss_gorax_bones = {
 	minimumLevel = 0,
 	maximumLevel = 0,	
 	lootItems = {
-		{itemTemplate = "gorax_bone_shards", weight = 5000000},
+		{itemTemplate = "gorax_bone_shards_medium", weight = 5000000},
 		{itemTemplate = "gorax_bone_shards_rare", weight = 5000000},
 	}
 }

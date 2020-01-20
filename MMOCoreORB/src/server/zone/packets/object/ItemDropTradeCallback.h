@@ -63,6 +63,21 @@ public:
 		if (player->isInCombat() || (playerTradeContainer != NULL && playerTradeContainer->getTradeTargetPlayer() == targetToTrade))
 			return;
 
+
+		// Tarkin's Revenge Arena System
+		if (playerObject->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "") {
+			player->sendSystemMessage("You cannot trade while fighting in an arena.");
+			return;
+		}
+
+		ManagedReference<PlayerObject*> targetGhost = targetPlayer->getPlayerObject();
+
+		if (targetGhost->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "") {
+			player->sendSystemMessage("You cannot trade with a player who is fighting in an arena.");
+			return;
+		}
+
+
 		if (playerTradeContainer == NULL) {
 			playerTradeContainer = new TradeSession();
 			player->addActiveSession(SessionFacadeType::TRADE, playerTradeContainer);

@@ -2775,5 +2775,8 @@ schematics = {
 	{path="object/draft_schematic/item/tarkin_custom/tarkin_rug_153.iff"},
 	{path="object/draft_schematic/item/tarkin_custom/tarkin_rug_138.iff"},
 	{path="object/draft_schematic/item/tarkin_custom/tarkin_rug_169.iff"},
-	{path="object/draft_schematic/item/tarkin_custom/tarkin_rug_123.iff"}
+	{path="object/draft_schematic/item/tarkin_custom/tarkin_rug_123.iff"},
+
+	--Weapon Component Analysis Tool
+	{path="object/draft_schematic/tool/tarkins_revenge_weapon_re_tool.iff"}
 };
