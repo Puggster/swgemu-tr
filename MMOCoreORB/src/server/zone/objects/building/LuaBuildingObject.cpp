@@ -36,6 +36,7 @@ Luna<LuaBuildingObject>::RegType LuaBuildingObject::Register[] = {
 		{ "initializeStaticGCWBase", &LuaBuildingObject::initializeStaticGCWBase },
 		{ "isPrivateStructure", &LuaBuildingObject::isPrivateStructure },
 		{ "getCellName", &LuaBuildingObject::getCellName },
+		{ "isOnPermissionList", &LuaBuildingObject::isOnPermissionList },
 		{ 0, 0 }
 };
 
@@ -199,5 +200,15 @@ int LuaBuildingObject::getCellName(lua_State* L) {
 
 	String text = realObject->getCellName(cellNum);
 	lua_pushstring(L, text.toCharArray());
+	return 1;
+}
+
+int LuaBuildingObject::isOnPermissionList(lua_State* L) {
+	String list = lua_tostring(L, -2);
+	ManagedReference<CreatureObject*> player = (CreatureObject*)lua_touserdata(L, -1);
+
+	if (player != nullptr)
+		lua_pushboolean(L, realObject->isOnPermissionList(list, player));
+	
 	return 1;
 }
