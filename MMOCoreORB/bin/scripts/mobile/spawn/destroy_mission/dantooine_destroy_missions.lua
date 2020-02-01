@@ -254,6 +254,12 @@ dantooine_destroy_missions = {
 			maxDifficulty = 62,
 			size = 25,
 		},
+		{
+			lairTemplateName = "dantooine_mutant_bol_lair_neutral_medium",
+			minDifficulty = 73,
+			maxDifficulty = 77,
+			size = 35,
+		}
 	}
 }
 
