@@ -1,12 +1,11 @@
-enzyme_2_2 = {
+enzyme_1_2 = {
 	minimumLevel = 0,
 	maximumLevel = -1,
-	customObjectName = "Lyase Enzymes [Red]",
-	directObjectTemplate = "object/tangible/loot/beast/enzyme_2.iff",
+	customObjectName = "Isomerase Enzymes [Red]",
+	directObjectTemplate = "object/tangible/loot/beast/enzyme_1.iff",
 	craftingValues = {
 		{"enzyme_color",2,3,0},
-		{"enzyme_type",2,2,0},
-		{"enzyme_baseline",1,28,0},
+		{"enzyme_type",1,1,0},
 	},
 	customizationStringNames = {},
 	customizationValues = {},
@@ -15,4 +14,4 @@ enzyme_2_2 = {
 	junkMaxValue = 40
 }
 
-addLootItemTemplate("enzyme_2_2", enzyme_2_2)
+addLootItemTemplate("enzyme_1_2", enzyme_1_2)
