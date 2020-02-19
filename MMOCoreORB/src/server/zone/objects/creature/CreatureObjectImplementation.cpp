@@ -3146,27 +3146,11 @@ bool CreatureObjectImplementation::isHealableBy(CreatureObject* object) {
 		if(targetGhost != nullptr && targetGhost->hasBhTef())
 			return false;
 
-
 		// Tarkin's Revenge Arena System
-		Lua* lua = DirectorManager::instance()->getLuaInstance();
-
-		Reference<LuaFunction*> ToTheDeathScreenplay = lua->createFunction("ToTheDeathScreenplay", "isFightClubContestant", 0);
-		*ToTheDeathScreenplay << targetCreo;
-
-		bool isContestant = ToTheDeathScreenplay->callFunction();
-	
-		if (isContestant == true)
+		if (ghost != targetGhost && targetGhost->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "") {
 			return false;
-	
-		ManagedReference<SceneObject*> targetParent = targetCreo->getRootParent();
-		if (targetParent != NULL) {
-		BuildingObject* buildingObject = cast<BuildingObject*>( targetParent.get());
-			if(buildingObject != NULL and buildingObject != 0) {
-				if (targetGhost->getScreenPlayData("ToTheDeathScreenplay", "activeFighterInArena") == buildingObject->getObjectID()) {
-					return false;
-				}
-			}
 		}
+
 	}
 	return true;
 }
