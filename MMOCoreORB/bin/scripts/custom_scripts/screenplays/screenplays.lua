@@ -24,4 +24,5 @@ includeFile("../custom_scripts/screenplays/tools/tarkin_bh_trophy_system.lua")
 includeFile("../custom_scripts/screenplays/tools/tarkin_lib.lua")
 includeFile("../custom_scripts/screenplays/tools/tarkin_reverse_engineering.lua")
 includeFile("../custom_scripts/screenplays/tools/Writeables.lua")
+includeFile("../custom_scripts/screenplays/items/trash_cans.lua")
 
