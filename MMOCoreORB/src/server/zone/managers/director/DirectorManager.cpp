@@ -673,6 +673,7 @@ int DirectorManager::writeScreenPlayData(lua_State* L) {
 		return 0;
 	}
 
+	Locker locker (ghost);
 	ghost->setScreenPlayData(screenPlay, variable, data);
 
 	return 0;

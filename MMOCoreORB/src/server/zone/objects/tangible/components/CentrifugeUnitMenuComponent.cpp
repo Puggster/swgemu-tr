@@ -28,6 +28,10 @@ void CentrifugeUnitMenuComponent::fillObjectMenuResponse(SceneObject* sceneObjec
 }
 
 int CentrifugeUnitMenuComponent::handleObjectMenuSelect(SceneObject* sceneObject, CreatureObject* player, byte selectedID) const {
+	if (sceneObject == NULL) {
+		return 0;
+	}
+
 	if (!sceneObject->isTangibleObject())
 		return 0;
 
@@ -35,6 +39,11 @@ int CentrifugeUnitMenuComponent::handleObjectMenuSelect(SceneObject* sceneObject
 		return 0;	
 
 	if (selectedID == 115) {
+
+		if (sceneObject->getZone()->getZoneServer() == NULL) {
+			return 0;
+		}
+
 		ManagedReference<LootManager*> lootManager = sceneObject->getZone()->getZoneServer()->getLootManager();
 
 		if (lootManager == NULL) {
