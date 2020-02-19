@@ -92,7 +92,7 @@ namespace player {
 
 		// Tarkin's Revenge
 		int getAccountID(lua_State* L);
-
+		int getInfamy(lua_State* L);
 
 	private:
 		// The pointer to the 'real object' defined in object.cc

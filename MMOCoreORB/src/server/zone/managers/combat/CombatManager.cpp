@@ -56,6 +56,13 @@ bool CombatManager::startCombat(CreatureObject* attacker, TangibleObject* defend
 	if (attacker->isPlayerCreature() && attacker->getPlayerObject()->isAFK())
 		return false;
 
+	// Tarkin's Revenge Arena System
+	if (attacker->isPlayerCreature()) {
+		PlayerObject* ghost = attacker->getPlayerObject();
+		if (ghost->getScreenPlayData("ToTheDeathScreenplay", "Spectator:") != "" || ghost->getScreenPlayData("ToTheDeathScreenplay", "Spectator:") == "0") 
+			return false;
+	}
+
 	CreatureObject *creo = defender->asCreatureObject();
 	if (creo != nullptr && creo->isIncapacitated() && creo->isFeigningDeath() == false) {
 		if (allowIncapTarget) {
@@ -1217,12 +1224,17 @@ int CombatManager::getArmorReduction(TangibleObject* attacker, WeaponObject* wea
 	if (armor != nullptr && !armor->isVulnerable(damageType)) {
 		float armorReduction = getArmorObjectReduction(armor, damageType);
 		float dmgAbsorbed = damage;
-
+		float ogDmg = dmgAbsorbed;
+		float baseline = 350.f;
+		float baselineDmg = baseline;
+		//info("Damage Absorbed = " + String::valueOf(dmgAbsorbed));
 		// use only the damage applied to the armor for piercing (after the PSG takes some off)
 		damage *= getArmorPiercing(armor, armorPiercing);
+		baselineDmg *= getArmorPiercing(armor, armorPiercing);
 
 		if (armorReduction > 0) {
 			damage *= (1.f - (armorReduction / 100.f));
+			baselineDmg *= (1.f - (armorReduction / 100.f));
 			dmgAbsorbed -= damage;
 			sendMitigationCombatSpam(defender, armor, (int)dmgAbsorbed, ARMOR);
 		}
@@ -1230,9 +1242,25 @@ int CombatManager::getArmorReduction(TangibleObject* attacker, WeaponObject* wea
 		// inflict condition damage
 		Locker alocker(armor);
 
-		armor->inflictDamage(armor, 0, damage * 0.2, true, true);
+		// Tarkin's Revenge diminishing returns on armor decay vs damage of hit
+		float armorDamage = 0.f;
+		if (ogDmg > baseline) {
+			float exponent = 1.4;
+			float modifiedDmg = (baselineDmg * 0.2) + (ogDmg * (pow(ogDmg,((1/exponent)*-1))));
+			if (modifiedDmg > damage * 0.2) {
+				armor->inflictDamage(armor, 0, damage * 0.2, true, true);
+				//info("Armor Damage Inflicted = " + String::valueOf(damage * 0.2));
+			} else {				
+				armor->inflictDamage(armor, 0, modifiedDmg, true, true);
+				//info("Modified Armor Damage Inflicted = " + String::valueOf(modifiedDmg));
+				//info("Would Have Inflicted = " + String::valueOf(damage * 0.2));
+			}
+		} else {
+			armor->inflictDamage(armor, 0, damage * 0.2, true, true);
+			//info("Armor Damage Inflicted = " + String::valueOf(damage * 0.2));
+		}
 	}
-
+	//info("Player Damage Inflicted = " + String::valueOf(damage));
 	return damage;
 }
 

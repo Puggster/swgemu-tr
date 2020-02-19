@@ -134,5 +134,6 @@
 //Tarkin Custom
 #include "server/zone/objects/tangible/component/genetic/EnzymeComponent.h"
 #include "server/zone/objects/tangible/component/genetic/IncubationComponent.h"
+#include "server/zone/objects/tangible/tool/reverse_engineering/ReverseEngineeringTool.h"
 
 #endif /* OBJECTS_H_ */
