@@ -378,16 +378,17 @@ void PetControlDeviceImplementation::spawnObject(CreatureObject* player) {
 
 
 		// Holdover from an improper optionBit being set before a creature was tamed
-		AiAgent* agent = cast<AiAgent*>(creature.get());
-		ManagedReference<Creature*> pet = cast<Creature*>(controlledObject.get());
-		Reference<CreatureTemplate*> creatureTemplate = pet->getCreatureTemplate();
+		if (creature->isCreature()) {
+			AiAgent* agent = cast<AiAgent*>(creature.get());
+			ManagedReference<Creature*> pet = cast<Creature*>(controlledObject.get());
+			Reference<CreatureTemplate*> creatureTemplate = pet->getCreatureTemplate();
 
-		if(creatureTemplate->getTemplateName() == "shyyyo_bird") {
- 			creature->setOptionsBitmask(OptionBitmask::AIENABLED, true);
-			pet->setPvpStatusBitmask(player->getPvpStatusBitmask());
-			agent->setCreatureBitmask(CreatureFlag::PET);
+			if(creatureTemplate->getTemplateName() == "shyyyo_bird") {
+ 				creature->setOptionsBitmask(OptionBitmask::AIENABLED, true);
+				pet->setPvpStatusBitmask(player->getPvpStatusBitmask());
+				agent->setCreatureBitmask(CreatureFlag::PET);
+			}
 		}
-
 
 
 		if (trainedAsMount && (creature->getOptionsBitmask() ^ 0x1000)) {
