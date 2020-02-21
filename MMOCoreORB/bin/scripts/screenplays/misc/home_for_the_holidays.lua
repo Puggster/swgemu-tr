@@ -105,6 +105,11 @@ function HomeForTheHolidaysScreenplay:travelHome(pPlayer)
 	local xRef = ""
 	local yRef = ""
 	
+	if (SceneObject(pPlayer):getZoneName() == "dungeon1") then -- Players may no longer travel home from inside the dungeon1 zone
+		CreatureObject(pPlayer):sendSystemMessage("Error: Travel Home does not work from this location.")
+		return
+	end	
+	
 	if(readScreenPlayData(pPlayer, "HomeForTheHolidaysScreenplay", "playerBindPlanet") ~= nil and readScreenPlayData(pPlayer, "HomeForTheHolidaysScreenplay", "playerBindPlanet") ~= "") then
 		zone = readScreenPlayData(pPlayer, "HomeForTheHolidaysScreenplay", "playerBindPlanet")
 	end
@@ -124,6 +129,11 @@ function HomeForTheHolidaysScreenplay:travelHome(pPlayer)
 	
 	if (not isZoneEnabled(zone)) then
 		CreatureObject(pPlayer):sendSystemMessage("Unable to switch zone.  Necessary zone was not enabled.")	
+		return
+	end
+
+	if (CreatureObject(pPlayer):isInCombat()) then
+		CreatureObject(pPlayer):sendSystemMessage("Unable to travel home while in combat.")			
 		return
 	end
 	

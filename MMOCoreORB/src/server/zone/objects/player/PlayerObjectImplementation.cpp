@@ -60,6 +60,7 @@
 #include "server/zone/objects/player/events/RemoveSpouseTask.h"
 #include "server/zone/objects/player/events/PvpTefRemovalTask.h"
 #include "server/zone/managers/visibility/VisibilityManager.h"
+#include "server/zone/managers/visibility/tarkin_custom/InfamyManager.h"
 #include "server/zone/managers/jedi/JediManager.h"
 #include "server/zone/objects/player/events/ForceRegenerationEvent.h"
 #include "server/login/account/AccountManager.h"
@@ -319,6 +320,25 @@ int PlayerObjectImplementation::calculateBhReward() {
 
 	if (frsRank > 0)
 		reward += frsRank * 100000; // +100k per frs rank
+
+	if (reward < minReward)
+		reward = minReward;
+	
+	if (reward > maxReward)
+		reward = maxReward;
+
+	return reward;
+}
+
+/* 
+* Tarkin's Revenge Modified Bounty System
+* December 2019
+*/
+int PlayerObjectImplementation::calculateBhInfamyReward() {
+	int minReward = 75000; // Minimum reward for an infamy player bounty
+	int maxReward = 1250000; //Maximum reward for an infamy player bounty
+
+	int reward = getInfamy() * 500;
 
 	if (reward < minReward)
 		reward = minReward;
@@ -1322,6 +1342,9 @@ void PlayerObjectImplementation::notifyOnline() {
 	//Add player to visibility list
 	VisibilityManager::instance()->addToVisibilityList(playerCreature);
 
+	//Add player to infamy list
+	InfamyManager::instance()->addToInfamyList(playerCreature);
+
 	//Login to jedi manager
 	JediManager::instance()->onPlayerLoggedIn(playerCreature);
 
@@ -1349,15 +1372,39 @@ void PlayerObjectImplementation::notifyOnline() {
 
 	MissionManager* missionManager = zoneServer->getMissionManager();
 
-	if (missionManager != nullptr && playerCreature->hasSkill("force_title_jedi_rank_02")) {
-		uint64 id = playerCreature->getObjectID();
+	/* 
+	* Tarkin's Revenge Modified Bounty System
+	* December 2019
+	*/
 
-		if (!missionManager->hasPlayerBountyTargetInList(id))
-			missionManager->addPlayerToBountyList(id, calculateBhReward());
-		else {
-			missionManager->updatePlayerBountyReward(id, calculateBhReward());
-			missionManager->updatePlayerBountyOnlineStatus(id, true);
+	uint64 id = playerCreature->getObjectID();	
+	int missionType = 0;
+	float terminalInfamyThreshold = InfamyManager::instance()->getTerminalInfamyThreshold();
+	auto targetGhost = playerCreature->getPlayerObject();
+
+	// If the player is already in the bounty list
+	if (missionManager != nullptr && missionManager->hasPlayerBountyTargetInList(id)) {
+		missionType = missionManager->getPlayerBountyType(id);
+		// If the mission type is a Visibility (Jedi) mission
+		if (missionType == 1) {
+				missionManager->updatePlayerBountyReward(id, calculateBhReward(), missionType);
+				missionManager->updatePlayerBountyType(id, missionType);
+				
+		// If the mission type is an Infamy (Fight Club) mission
+		} else if (missionType == 2) {
+				missionManager->updatePlayerBountyReward(id, calculateBhInfamyReward(), missionType);		
 		}
+		
+		missionManager->updatePlayerBountyOnlineStatus(id, true);		
+		
+	// If player is not in the bounty list, but has Jedi skill, add them to the list with a type 1 mission			
+	} else if (playerCreature->hasSkill("force_title_jedi_rank_02")){ 
+		missionType = 1;	
+		missionManager->addPlayerToBountyList(id, calculateBhReward(), missionType);
+	// If player is not in the bounty list, but has infamy above or equal to the threshhold, add them to the list with a type 2 mission		
+	} else if (targetGhost->getInfamy() >= terminalInfamyThreshold){ 
+		missionType = 2;	
+		missionManager->addPlayerToBountyList(id, calculateBhInfamyReward(), missionType);	
 	}
 
 	playerCreature->schedulePersonalEnemyFlagTasks();
@@ -1387,6 +1434,9 @@ void PlayerObjectImplementation::notifyOffline() {
 
 	//Remove player from visibility list
 	VisibilityManager::instance()->removeFromVisibilityList(playerCreature);
+
+	//Remove player from infamy list
+	InfamyManager::instance()->removeFromInfamyList(playerCreature);
 
 	playerCreature->notifyObservers(ObserverEventType::LOGGEDOUT);
 
@@ -2123,6 +2173,10 @@ void PlayerObjectImplementation::clearScreenPlayData(const String& screenPlay) {
 
 Time PlayerObjectImplementation::getLastVisibilityUpdateTimestamp() {
 	return lastVisibilityUpdateTimestamp;
+}
+
+Time PlayerObjectImplementation::getLastInfamyUpdateTimestamp() {
+	return lastInfamyUpdateTimestamp;
 }
 
 Time PlayerObjectImplementation::getLastBhPvpCombatActionTimestamp() {

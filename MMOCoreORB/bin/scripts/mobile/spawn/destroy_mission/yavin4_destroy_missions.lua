@@ -212,6 +212,12 @@ yavin4_destroy_missions = {
 			maxDifficulty = 37,
 			size = 25,
 		},
+		{
+			lairTemplateName = "yavin4_mutant_angler_lair_neutral_medium",
+			minDifficulty = 73,
+			maxDifficulty = 77,
+			size = 35,
+		}
 	}
 }
 

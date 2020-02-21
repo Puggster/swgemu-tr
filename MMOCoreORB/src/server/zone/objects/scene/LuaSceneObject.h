@@ -105,6 +105,10 @@ namespace scene {
 		int getPlayersInRange(lua_State* L);
 		int isInNavMesh(lua_State* L);
 
+		// Tarkin's Revenge
+		int broadcastGalaxy(lua_State* L);
+		int getQuaternionElement(lua_State* L);
+
 	protected:
 		SceneObject* _getRealSceneObject() {
 			return realObject.get();

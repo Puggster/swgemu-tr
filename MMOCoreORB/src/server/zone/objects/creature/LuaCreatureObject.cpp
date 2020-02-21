@@ -17,6 +17,7 @@
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/managers/skill/SkillManager.h"
 #include "server/zone/objects/tangible/threat/ThreatMap.h"
+#include "server/zone/managers/visibility/tarkin_custom/InfamyManager.h"
 
 const char LuaCreatureObject::className[] = "LuaCreatureObject";
 
@@ -152,6 +153,8 @@ Luna<LuaCreatureObject>::RegType LuaCreatureObject::Register[] = {
 		{ "setFoodFilling", &LuaCreatureObject::setFoodFilling },
 		{ "setDrinkFilling", &LuaCreatureObject::setDrinkFilling },
 		{ "getGroupLeader", &LuaCreatureObject::getGroupLeader },
+		{ "increaseInfamy", &LuaCreatureObject::increaseInfamy },
+		{ "clearInfamy", &LuaCreatureObject::clearInfamy },
 		{ 0, 0 }
 };
 
@@ -1300,4 +1303,30 @@ int LuaCreatureObject::getGroupLeader(lua_State* L) {
 		lua_pushlightuserdata(L, leader);
 	}
 	return 1;
+}
+
+/*
+* Tarkin's Revenge
+* Increase the infamy value of a player
+* lua: CreatureObject(pPlayer):increaseInfamy()
+*/
+int LuaCreatureObject::increaseInfamy(lua_State* L) {
+	int arenaNum = lua_tointeger(L, -1);
+	CreatureObject* opponent = (CreatureObject*) lua_touserdata(L, -2);
+
+	InfamyManager::instance()->increaseInfamy(realObject, opponent, arenaNum);
+
+	return 0;
+}
+
+/*
+* Tarkin's Revenge
+* Clear the infamy value of a player
+* lua: CreatureObject(pPlayer):clearInfamy()
+*/
+int LuaCreatureObject::clearInfamy(lua_State* L) {
+
+	InfamyManager::instance()->clearInfamy(realObject);
+
+	return 0;
 }

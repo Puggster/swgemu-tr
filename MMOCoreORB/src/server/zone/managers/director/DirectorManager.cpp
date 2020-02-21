@@ -673,6 +673,7 @@ int DirectorManager::writeScreenPlayData(lua_State* L) {
 		return 0;
 	}
 
+	Locker locker (ghost);
 	ghost->setScreenPlayData(screenPlay, variable, data);
 
 	return 0;
@@ -3943,6 +3944,14 @@ int DirectorManager::forceTameBaby(lua_State* L) {
 	ZoneServer* zoneServer = ServerCore::getZoneServer();
 	Reference<SceneObject*> object = zoneServer->getObject(objectID);
 
+	if (object == NULL || !object->isCreature()) {
+		player->sendSystemMessage("@pet/pet_menu:sys_cant_tame"); // You can't tame that
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Creature* creature = cast<Creature*>(object.get());
+
 	Zone* zone = player->getZone();
 
 	if (zone == NULL) {
@@ -3962,7 +3971,6 @@ int DirectorManager::forceTameBaby(lua_State* L) {
 		return 1;
 	}
 
-	Creature* creature = cast<Creature*>(object.get());
 	CreatureTemplate* creatureTemplate = creature->getCreatureTemplate();
 
 	if (creatureTemplate == NULL) {
@@ -4058,12 +4066,105 @@ int DirectorManager::forceTameBaby(lua_State* L) {
 		}
 	}
 
-	TameCreatureTask* tameTask = new TameCreatureTask(creature, player, creature->getPvpStatusBitmask(), true, adult);
-	tameTask->execute(); 
+	Locker clocker(creature);
+
+	int mask = creature->getPvpStatusBitmask();
+	creature->setPvpStatusBitmask(0, true);
+
+	if (creature->isAiAgent()) {
+		AiAgent* agent = cast<AiAgent*>(creature);
+		agent->activateLoad("wait");
+	}
+
+	zoneServer = player->getZoneServer();
+
+	String objectString = creature->getControlDeviceTemplate();
+	if (objectString == "")
+		objectString = "object/intangible/pet/pet_control.iff";
+
+	ObjectManager* objectManager = zoneServer->getObjectManager();
+		
+	if (playerManager == NULL || objectManager == NULL) {
+		creature->setPvpStatusBitmask(mask, true);
+		lua_pushnil(L);
+		return 1;
+	}
+
+	ManagedReference<PetControlDevice*> controlDevice = zoneServer->createObject(objectString.hashCode(), 1).castTo<PetControlDevice*>();
+
+	if (controlDevice == NULL) {
+		creature->setPvpStatusBitmask(mask, true);
+		lua_pushnil(L);
+		return 1;
+	}
+
+	Locker deviceLocker(controlDevice);
+
+	controlDevice->setControlledObject(creature);
+
+	StringId s;
+	s.setStringId(creature->getObjectName()->getFullPath());
+
+	controlDevice->setObjectName(s, false);
+	controlDevice->setPetType(PetManager::CREATUREPET);
+	controlDevice->setMaxVitality(100);
+	controlDevice->setVitality(100);
+	controlDevice->setGrowthStage(1);
+	controlDevice->updateStatus(1);
+	controlDevice->setCustomObjectName(creature->getCustomObjectName(), true);
+
+	if (!datapad->transferObject(controlDevice, -1)) {
+		creature->setPvpStatusBitmask(mask, true);
+		controlDevice->destroyObjectFromDatabase(true);
+		lua_pushnil(L);
+		return 1;
+	}
+	
+	objectManager->persistSceneObjectsRecursively(creature, 1);
+
+	if (adult) {
+		controlDevice->growPet(player, true, true);
+	}
+
+	creature->setControlDevice(controlDevice);
+	creature->setObjectMenuComponent("PetMenuComponent");
+	creature->setCreatureLink(player);
+	creature->setFaction(player->getFaction());
+
+	if (player->getPvpStatusBitmask() & CreatureFlag::PLAYER)
+		creature->setPvpStatusBitmask(player->getPvpStatusBitmask() - CreatureFlag::PLAYER, false);
+	else
+		creature->setPvpStatusBitmask(player->getPvpStatusBitmask(), false);
+
+	creature->setBaby(false);
+
+	if (creature->isAiAgent()) {
+		AiAgent* agent = cast<AiAgent*>(creature);
+		ManagedReference<CellObject*> parent = player->getParent().get().castTo<CellObject*>();
+
+		agent->setLairTemplateCRC(0);
+		agent->setFollowObject(player);
+		agent->storeFollowObject();
+
+		agent->setHomeLocation(player->getPositionX(), player->getPositionZ(), player->getPositionY(), parent);
+		agent->setNextStepPosition(player->getPositionX(), player->getPositionZ(), player->getPositionY(), parent);
+		agent->clearPatrolPoints();
+
+		agent->setCreatureBitmask(CreatureFlag::PET);
+		agent->activateLoad("");
+	}
+
+	creature->getZone()->broadcastObject(creature, true);
+	datapad->broadcastObject(controlDevice, true);
+
+	ghost->addToActivePets(creature);
+	player->sendSystemMessage("@hireling/hireling:taming_success"); // You successfully tame the creature.
+	creature->showFlyText("npc_reaction/flytext","success", 0, 204, 0);  // You tame the creature.
 
 	lua_pushlightuserdata(L, creature);
 	return 1;
 }
+
 
 /*
 * Tarkin's Revenge
@@ -4093,3 +4194,4 @@ int DirectorManager::setCustomization(lua_State* L) {
 	lua_pushlightuserdata(L, creature);
 	return 1;
 }
+

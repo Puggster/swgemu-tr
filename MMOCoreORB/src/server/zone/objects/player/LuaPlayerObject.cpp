@@ -85,6 +85,7 @@ Luna<LuaPlayerObject>::RegType LuaPlayerObject::Register[] = {
 
 		//Tarkin's Revenge
 		{ "getAccountID", &LuaPlayerObject::getAccountID },
+		{ "getInfamy", &LuaPlayerObject::getInfamy },
 		{ 0, 0 }
 };
 
@@ -757,11 +758,25 @@ int LuaPlayerObject::getPlayedTimeString(lua_State* L) {
 /*
 * Tarkin's Revenge
 * Get the account ID of a player
-* lua: getAccountID(pPlayer)
+* lua: PlayerObject(pGhost):getAccountID()
 */
 
 int LuaPlayerObject::getAccountID(lua_State* L) {
 	lua_pushinteger(L, realObject->getAccountID());
+
+	return 1;
+}
+
+/*
+* Tarkin's Revenge
+* Get the infamy value of a player
+* lua: PlayerObject(pGhost):getInfamy()
+*/
+
+int LuaPlayerObject::getInfamy(lua_State* L) {
+	float infamy = realObject->getInfamy();
+
+	lua_pushnumber(L, infamy);
 
 	return 1;
 }

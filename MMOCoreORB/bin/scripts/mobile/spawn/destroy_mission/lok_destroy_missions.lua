@@ -230,6 +230,12 @@ lok_destroy_missions = {
 			maxDifficulty = 67,
 			size = 25,
 		},
+		{
+			lairTemplateName = "lok_mutant_snorbal_lair_neutral_medium",
+			minDifficulty = 73,
+			maxDifficulty = 77,
+			size = 35,
+		}
 	}
 }
 

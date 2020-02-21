@@ -470,6 +470,12 @@ corellia_destroy_missions = {
 			maxDifficulty = 35,
 			size = 35,
 		},
+		{
+			lairTemplateName = "corellia_mutant_gronda_lair_neutral_large",
+			minDifficulty = 73,
+			maxDifficulty = 77,
+			size = 35,
+		}
 	}
 }
 

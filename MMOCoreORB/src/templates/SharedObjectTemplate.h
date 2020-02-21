@@ -197,6 +197,7 @@ public:
 	const static int XPPURCHASE = 0x4000059;
 	const static int PETCUSTOMKIT = 0x400005A;
 	const static int TARKINGRANT = 0x400005B;
+	const static int RETOOL = 0x400005C;
 
 public:
 	SharedObjectTemplate();
@@ -689,6 +690,10 @@ public:
 	}
 
 	virtual bool isRepairToolTemplate() {
+		return false;
+	}
+
+	virtual bool isReverseEngineeringToolTemplate() {
 		return false;
 	}
 

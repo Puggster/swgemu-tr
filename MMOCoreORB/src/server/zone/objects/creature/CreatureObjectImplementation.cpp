@@ -3145,8 +3145,13 @@ bool CreatureObjectImplementation::isHealableBy(CreatureObject* object) {
 		PlayerObject* targetGhost = targetCreo->getPlayerObject();
 		if(targetGhost != nullptr && targetGhost->hasBhTef())
 			return false;
-	}
 
+		// Tarkin's Revenge Arena System
+		if (ghost != targetGhost && targetGhost->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "") {
+			return false;
+		}
+
+	}
 	return true;
 }
 

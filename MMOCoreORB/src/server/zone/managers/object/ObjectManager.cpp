@@ -128,6 +128,7 @@ void ObjectManager::registerObjectTypes() {
 
 	objectFactory.registerObject<ToolTangibleObject>(SceneObjectType::TOOL);
 	objectFactory.registerObject<RepairTool>(SceneObjectType::REPAIRTOOL);
+	objectFactory.registerObject<ReverseEngineeringTool>(SceneObjectType::RETOOL);
 	objectFactory.registerObject<CraftingTool>(SceneObjectType::CRAFTINGTOOL);
 	objectFactory.registerObject<SurveyTool>(SceneObjectType::SURVEYTOOL);
 	objectFactory.registerObject<RecycleTool>(SceneObjectType::RECYCLETOOL);

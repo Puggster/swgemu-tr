@@ -125,8 +125,10 @@ function NewYearNewRegimeScreenplay:start()
 	if (os.difftime(eventEndTime, os.time()) >= 0) then
 		if (not hasServerEvent("NewYearNewRegimeScreenplayEnd")) then
 			local endEventID = createServerEvent(os.difftime(eventEndTime, os.time())*1000, "NewYearNewRegimeScreenplay", "endNewYearEvent", "NewYearNewRegimeScreenplayEnd")
+			print("[War Games] endNewYearEvent will be triggered in " .. os.difftime(eventEndTime, os.time()) .. " seconds.")
 		else
 			rescheduleServerEvent("NewYearNewRegimeScreenplayEnd", os.difftime(eventEndTime, os.time())*1000)
+			print("[War Games] endNewYearEvent will be triggered in " .. os.difftime(eventEndTime, os.time()) .. " seconds.")
 		end
 	end
 
@@ -134,8 +136,10 @@ function NewYearNewRegimeScreenplay:start()
 	if (os.difftime(eventCleanupTime, os.time()) >= 0) then
 		if (not hasServerEvent("NewYearNewRegimeScreenplayCleanup")) then
 			local cleanupEventID = createServerEvent(os.difftime(eventCleanupTime, os.time())*1000, "NewYearNewRegimeScreenplay", "cleanupNewYearEvent", "NewYearNewRegimeScreenplayCleanup")
+			print("[War Games] cleanupNewYearEvent will be triggered in " .. os.difftime(eventCleanupTime, os.time()) .. " seconds.")
 		else
 			rescheduleServerEvent("NewYearNewRegimeScreenplayCleanup", os.difftime(eventCleanupTime, os.time())*1000)
+			print("[War Games] cleanupNewYearEvent will be triggered in " .. os.difftime(eventCleanupTime, os.time()) .. " seconds.")
 		end
 	end
 end
@@ -230,6 +234,12 @@ function NewYearNewRegimeScreenplay:endNewYearEvent()
 end
 
 function NewYearNewRegimeScreenplay:cleanupNewYearEvent()
+	-- If event termination is being triggerd early, stop that nonsense
+	if (os.difftime(eventCleanupTime, os.time()) >= 0) then
+		printLuaError("[War Games] cleanupNewYearEvent was triggered early, disallowing...")
+		return
+	end
+
 	--remove player variables
 	local pointsList = getQuestStatus("new_regime:pointsList")
 	list = ""
@@ -240,8 +250,19 @@ function NewYearNewRegimeScreenplay:cleanupNewYearEvent()
 		for i = 1, #list, 1 do
 			pPlayer = getSceneObject(tonumber(list[i])) 
 			if (pPlayer ~= nil) then
+
+				local playerPoints = readScreenplayData(pPlayer, "NewYearNewRegimeScreenplay", "playerPoints")
+				local playerRedeemedPoints = readScreenplayData(pPlayer, "NewYearNewRegimeScreenplay", "playerRedeemedPoints")
+				if(playerPoints ~= nil and playerPoints ~= "") then
+					print("Deleting playerPoints for player " .. list[i] .. ".  " .. playerPoints .. " points deleted.")
+				end
 				deleteScreenPlayData(pPlayer, "NewYearNewRegimeScreenplay", "playerPoints")
+
+				if(playerRedeemedPoints ~= nil and playerRedeemedPoints ~= "") then
+					print("Deleting playerRedeemedPoints for player " .. list[i] .. ".  " .. playerRedeemedPoints .. " points deleted.")
+				end
 				deleteScreenPlayData(pPlayer, "NewYearNewRegimeScreenplay", "playerRedeemedPoints")
+
 				deleteScreenPlayData(pPlayer, "NewYearNewRegimeScreenplay", "claimed1")
 				deleteScreenPlayData(pPlayer, "NewYearNewRegimeScreenplay", "claimed2")
 				deleteScreenPlayData(pPlayer, "NewYearNewRegimeScreenplay", "claimed3")
@@ -256,6 +277,26 @@ function NewYearNewRegimeScreenplay:cleanupNewYearEvent()
 	end
 
 	--remove quest statuses
+	if(getQuestStatus("new_regime:rebelList") ~= nil and getQuestStatus("new_regime:rebelList") ~= "") then
+		print("Deleting rebelList: " .. getQuestStatus("new_regime:rebelList"))
+	end
+
+	if(getQuestStatus("new_regime:imperialList") ~= nil and getQuestStatus("new_regime:imperialList") ~= "") then
+		print("Deleting imperialList: " .. getQuestStatus("new_regime:imperialList"))
+	end
+
+	if(getQuestStatus("new_regime:pointsList") ~= nil and getQuestStatus("new_regime:pointsList") ~= "") then
+		print("Deleting pointsList: " .. getQuestStatus("new_regime:pointsList"))
+	end
+
+	if(getQuestStatus("new_regime:rebelPoints") ~= nil and getQuestStatus("new_regime:rebelPoints") ~= "") then
+		print("Deleting rebelPoints: " .. getQuestStatus("new_regime:rebelPoints"))
+	end
+
+	if(getQuestStatus("new_regime:imperialPoints") ~= nil and getQuestStatus("new_regime:imperialPoints") ~= "") then
+		print("Deleting imperialPoints: " .. getQuestStatus("new_regime:imperialPoints"))
+	end
+
 	removeQuestStatus("new_regime:baseFaction")
 	removeQuestStatus("new_regime:rebelList")
 	removeQuestStatus("new_regime:imperialList")
@@ -1264,6 +1305,10 @@ function NewYearNewRegimeScreenplay:grantPoints(pPlayer, reason)
 	local pointsAdder = 0
 	local playerPoints = self:getPlayerPoints(pPlayer)
 	local bonusPoints = false
+
+	if (playerPoints == nil) then
+		playerPoints = 0
+	end
 	
 	if (reason == "pve") then
 		points = pvePointsValue
@@ -1826,3 +1871,4 @@ function GCWSecondDNATerminalObjectMenuComponent:handleObjectMenuSelect(pTermina
 	end
 	return 1
 end
+

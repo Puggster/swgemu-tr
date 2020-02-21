@@ -1276,9 +1276,9 @@ FishingEvent* FishingManagerImplementation::createFishingEvent(CreatureObject* p
 	int timer = System::random(1000);
 
 	if (state >= CATCH)
-		player->addPendingTask("fishing", fishingEvent, timer + 2000);
-	else
 		player->addPendingTask("fishing", fishingEvent, timer + 3000);
+	else
+		player->addPendingTask("fishing", fishingEvent, timer + 4000);
 
 	return fishingEvent;
 }
