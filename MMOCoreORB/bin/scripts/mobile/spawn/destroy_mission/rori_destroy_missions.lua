@@ -338,6 +338,12 @@ rori_destroy_missions = {
 			maxDifficulty = 36,
 			size = 30,
 		},
+		{
+			lairTemplateName = "rori_mutant_pugoriss_lair_neutral_medium",
+			minDifficulty = 73,
+			maxDifficulty = 77,
+			size = 35,
+		}
 	}
 }
 

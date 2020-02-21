@@ -282,3 +282,4 @@ includeFile("endor/young_hanadak_rock_crusher.lua")
 
 includeFile("endor/domesticated_bordok_stud.lua")
 includeFile("endor/domesticated_bordok_mare.lua")
+includeFile("endor/mutant_roba.lua")

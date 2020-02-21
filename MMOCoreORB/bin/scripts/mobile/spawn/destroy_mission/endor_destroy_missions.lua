@@ -434,6 +434,12 @@ endor_destroy_missions = {
 			maxDifficulty = 62,
 			size = 25,
 		},
+		{
+			lairTemplateName = "endor_mutant_roba_neutral_small",
+			minDifficulty = 73,
+			maxDifficulty = 77,
+			size = 35,
+		}
 	}
 }
 

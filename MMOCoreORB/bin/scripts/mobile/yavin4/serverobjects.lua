@@ -111,3 +111,4 @@ includeFile("yavin4/woolamander_reaper.lua")
 
 includeFile("yavin4/domesticated_tybis.lua")
 includeFile("yavin4/domesticated_female_tybis.lua")
+includeFile("yavin4/mutant_angler.lua")
