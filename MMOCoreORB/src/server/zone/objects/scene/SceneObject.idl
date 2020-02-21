@@ -1707,6 +1707,11 @@ class SceneObject extends QuadTreeEntry implements Logger, Metrics {
 		return gameObjectType == SceneObjectType.REPAIRTOOL;
 	}
 
+	@read
+	public boolean isReverseEngineeringTool() {
+		return gameObjectType == SceneObjectType.RETOOL;
+	}
+
 	@dirty
 	public boolean isCamoKit() {
 		return templateObject.isCamoKitTemplate();

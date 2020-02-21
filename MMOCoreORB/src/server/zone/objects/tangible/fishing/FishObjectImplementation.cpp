@@ -61,6 +61,9 @@ void FishObjectImplementation::fillAttributeList(AttributeListMessage* alm, Crea
 
 	String lengthText = String::valueOf(length) + "m";
 	alm->insertAttribute("length", lengthText);
+	alm->insertAttribute("caught_by", player);
+	alm->insertAttribute("fish_time_caught", timeCaught);
+	alm->insertAttribute("planet", zoneName);
 
 	//TODO: Reenable with new zone system.
 	//String planetText = Planet::getPlanetName(planet);

@@ -49,6 +49,13 @@ void PetControlDeviceImplementation::callObject(CreatureObject* player) {
 			player->sendSystemMessage("@pet/pet_menu:private_house"); // You cannot call pets in a private building.
 			return;
 		}
+
+		// Tarkin's Revenge Arena System	
+		ManagedReference<PlayerObject*> ghost = player->getPlayerObject();
+		if (ghost->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "" || ghost->getScreenPlayData("ToTheDeathScreenplay", "Spectator:") != "") {
+			player->sendSystemMessage("You cannot call pets inside an arena.");
+			return;
+		}
 	}
 
 	if (!isASubChildOf(player))

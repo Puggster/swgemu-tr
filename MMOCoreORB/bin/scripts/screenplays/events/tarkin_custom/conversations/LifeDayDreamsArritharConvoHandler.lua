@@ -13,9 +13,9 @@ function LifeDayDreamsArritharConvoHandler:getInitialScreen(pPlayer, pNpc, pConv
 
 	if (readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "arritharQuest") == "1") then
 		return convoTemplate:getScreen("arrithar_12")
-	elseif (readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "arritharQuest") == "2" or readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "arritharQuest") == "3") then
+	elseif (readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "arritharQuest") == "2" or readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "arritharQuest") == "3" and readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "birdSpawned") ~= "1") then
 		return convoTemplate:getScreen("arrithar_23")
-	elseif (readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "arritharQuest") == "4") then
+	elseif (readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "birdSpawned") == "1" or readScreenPlayData(pPlayer, "LifeDayDreamsScreenplay", "arritharQuest") == "4") then
 		return convoTemplate:getScreen("arrithar_27")
 	else		
 		return convoTemplate:getScreen("arrithar_intro")

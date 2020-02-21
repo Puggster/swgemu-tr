@@ -201,6 +201,7 @@ public:
 	const static int REPAIRTOOL = 0x8003;
 	const static int CAMPKIT = 0x8004;
 	const static int SHIPCOMPONENTREPAIRITEM = 0x8005;
+	const static int RETOOL = 0x80007;
 
 	// Not in client ******************
 	const static int SLICINGTOOL = 0x8006;

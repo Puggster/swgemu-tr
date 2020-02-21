@@ -7,6 +7,7 @@ function PlayerTriggers:playerLoggedIn(pPlayer)
 	ServerEventAutomation:playerLoggedIn(pPlayer)
 	BestineElection:playerLoggedIn(pPlayer)
 	LifeDayDreamsScreenplay:playerLoggedIn(pPlayer)
+	ToTheDeathScreenplay:playerLoggedIn(pPlayer)
 end
 
 function PlayerTriggers:playerLoggedOut(pPlayer)

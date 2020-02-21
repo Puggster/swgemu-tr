@@ -194,6 +194,13 @@ public:
 								item = bagItem;
 								break;
 							}
+						} else if (rightItem->isRangedStimPack()){
+							RangedStimPack* rStm = cast<RangedStimPack*>(rightItem);
+							
+							if (rStm->getMedicineUseRequired() <= medicineUse){
+								item = bagItem;
+								break;
+							}
 						}
 					}
 				}

@@ -212,6 +212,7 @@ namespace server {
 		static int spawnBaby(lua_State* L);
 		static int forceTameBaby(lua_State* L);
 		static int setCustomization(lua_State* L);
+		static int floatToHex(lua_State* L);
 
 	private:
 		void setupLuaPackagePath(Lua* luaEngine);

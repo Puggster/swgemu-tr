@@ -44,6 +44,7 @@
 
 --Children folder includes
 includeFile("building/base/serverobjects.lua")
+includeFile("building/content/meatlump/serverobjects.lua")
 includeFile("building/corellia/serverobjects.lua")
 includeFile("building/dathomir/serverobjects.lua")
 includeFile("building/endor/serverobjects.lua")
@@ -52,6 +53,7 @@ includeFile("building/general/serverobjects.lua")
 includeFile("building/kashyyyk/serverobjects.lua")
 includeFile("building/lok/serverobjects.lua")
 includeFile("building/military/serverobjects.lua")
+includeFile("building/mustafar/structures/serverobjects.lua")
 includeFile("building/naboo/serverobjects.lua")
 includeFile("building/player/serverobjects.lua")
 includeFile("building/poi/serverobjects.lua")

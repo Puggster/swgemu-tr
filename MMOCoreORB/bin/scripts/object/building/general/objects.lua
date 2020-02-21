@@ -8108,3 +8108,9 @@ object_building_general_shared_bunker_imperial_kashyyyk_01 = SharedBuildingObjec
 
 ObjectTemplates:addClientTemplate(object_building_general_shared_bunker_imperial_kashyyyk_01, "object/building/general/shared_bunker_imperial_kashyyyk_01.iff")
 
+object_building_general_shared_npe_space_station = SharedBuildingObjectTemplate:new {
+	clientTemplateFileName = "object/building/general/shared_npe_space_station.iff"
+}
+
+ObjectTemplates:addClientTemplate(object_building_general_shared_npe_space_station, "object/building/general/shared_npe_space_station.iff")
+

@@ -39,3 +39,15 @@ object_mobile_ep3_shared_ep3_wke_lolo = SharedCreatureObjectTemplate:new {
 }
 
 ObjectTemplates:addClientTemplate(object_mobile_ep3_shared_ep3_wke_lolo, "object/mobile/ep3/shared_ep3_wke_lolo.iff")
+
+object_mobile_ep3_shared_ep3_blackscale_captain_beshk = SharedCreatureObjectTemplate:new {
+	clientTemplateFileName = "object/mobile/ep3/shared_ep3_blackscale_captain_beshk.iff"
+}
+
+ObjectTemplates:addClientTemplate(object_mobile_ep3_shared_ep3_blackscale_captain_beshk, "object/mobile/ep3/shared_ep3_blackscale_captain_beshk.iff")
+
+object_mobile_ep3_shared_ep3_clone_relics_mort = SharedCreatureObjectTemplate:new {
+	clientTemplateFileName = "object/mobile/ep3/shared_ep3_clone_relics_mort.iff"
+}
+
+ObjectTemplates:addClientTemplate(object_mobile_ep3_shared_ep3_clone_relics_mort, "object/mobile/ep3/shared_ep3_clone_relics_mort.iff")

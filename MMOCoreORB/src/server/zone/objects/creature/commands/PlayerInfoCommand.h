@@ -111,6 +111,7 @@ public:
 				}
 
 				promptText << endl << "Visibility = " << ghost->getVisibility() << endl;
+				promptText << endl << "Infamy = " << ghost->getInfamy() << endl;
 
 				MissionManager* missionManager = creature->getZoneServer()->getMissionManager();
 				Vector<uint64>* hunterList =  missionManager->getHuntersHuntingTarget(targetObject->getObjectID());
