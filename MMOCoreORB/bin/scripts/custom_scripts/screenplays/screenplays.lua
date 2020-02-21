@@ -13,6 +13,7 @@ includeFile("../custom_scripts/screenplays/convohandlers/TarkinArenaGatekeeper09
 includeFile("../custom_scripts/screenplays/convohandlers/TarkinArenaGatekeeper10ConvoHandler.lua")
 includeFile("../custom_scripts/screenplays/convohandlers/TarkinTravelingMerchantHassanConvoHandler.lua")
 
+includeFile("../custom_scripts/screenplays/dungeons/meatlump_hideout.lua")
 includeFile("../custom_scripts/screenplays/events/new_regime_data.lua")
 includeFile("../custom_scripts/screenplays/events/to_the_death.lua")
 includeFile("../custom_scripts/screenplays/events/traveling_merchant.lua")
