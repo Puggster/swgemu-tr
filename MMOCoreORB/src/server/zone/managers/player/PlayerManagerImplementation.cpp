@@ -106,7 +106,9 @@
 #include "server/zone/objects/building/TutorialBuildingObject.h"
 
 #include "server/zone/managers/visibility/VisibilityManager.h"
+#include "server/zone/managers/visibility/tarkin_custom/InfamyManager.h"
 #include "server/zone/managers/mission/MissionManager.h"
+#include "server/zone/objects/mission/MissionObject.h"
 #include "server/zone/managers/frs/FrsManager.h"
 #include "server/zone/managers/statistics/StatisticsManager.h"
 
@@ -1130,16 +1132,6 @@ void PlayerManagerImplementation::killPlayer(TangibleObject* attacker, CreatureO
 
 	ThreatMap* threatMap = player->getThreatMap();
 
-	if (attacker->isPlayerCreature() || attacker->isPet()){
-		CreatureObject* attackerCreature = attacker->asCreatureObject();
-		if (attackerCreature->isPet()) {
-				CreatureObject* owner = attackerCreature->getLinkedCreature().get();
-
-				if (owner != NULL && owner->isPlayerCreature()) {
-					attackerCreature = owner;
-				}
-		}
-
 	if (attacker->getFaction() != 0) {
 		if (attacker->isPlayerCreature() || attacker->isPet()) {
 			CreatureObject* attackerCreature = attacker->asCreatureObject();
@@ -1211,53 +1203,64 @@ void PlayerManagerImplementation::killPlayer(TangibleObject* attacker, CreatureO
 	player->notifyObjectKillObservers(attacker);
 
 
-	if (attackerCreature->isPlayerCreature()) {
+	if (attacker->isPlayerCreature()) {
+		CreatureObject* attackerCreature = attacker->asCreatureObject();	
 		String playerName = player->getFirstName();
 		String killerName = attackerCreature->getFirstName();
 		StringBuffer zBroadcast;
 		String killerFaction, playerFaction, killerAllegiance, playerAllegiance;
 		Reference<PlayerObject*> ghost = attackerCreature->getSlottedObject("ghost").castTo<PlayerObject*>();
 
-		if (attacker->isRebel()) {
-			killerFaction = "Rebel";
-			killerAllegiance = "the Rebel Alliance";
-		}
-		else if (attacker->isImperial()) {
-			killerFaction = "Imperial";
-			killerAllegiance = "the Empire";
-		}
-		else {
-			killerFaction = "Civilian";
-			killerAllegiance = "an unknown faction";
+		MissionManager* missionManager = player->getZoneServer()->getMissionManager();
+		uint64 attackerMissionID = 0;
+		uint64 playerMissionID = 0;
+		uint64 playerID = player->getObjectID();
+		uint64 attackerID = attackerCreature->getObjectID();
+
+		// If the killer has Investigation 3, get the objectID of the player target of their mission
+		if (attackerCreature->hasSkill("combat_bountyhunter_investigation_03")) { 
+			ManagedReference<MissionObject*> attackerMission = missionManager->getBountyHunterMission(attackerCreature);
+			if (attackerMission != NULL) {
+				attackerMissionID = attackerMission->getTargetObjectId();
+			}
 		}
 
-		if (player->isRebel()) {
-			playerFaction = "Rebel";
-			playerAllegiance = "the Rebel Alliance";
-		}
-		else if (player->isImperial()) {
-			playerFaction = "Imperial";
-			playerAllegiance = "the Empire";
-				}
-		else {
-			playerFaction = "Civilian";
-			playerAllegiance = "an unknown faction";
-				}
-		
-		if (ghost->getAdminLevel() >= 15) {
+		// Build the announcement text
+		if (ghost->getAdminLevel() >= 15) { // Admin player kill
 			zBroadcast <<"\\#ff004c Be afraid, all ye peons of the galaxy, for " << playerName << " has been killed by an Act of God.";
-		}
-		else if (CombatManager::instance()->areInDuel(attackerCreature, player)) {
+		} else if (CombatManager::instance()->areInDuel(attackerCreature, player)) { // Duel kill
 			zBroadcast <<"\\#ffa100 Murder in the galaxy!  It has been reported that " << playerName << " was killed in a duel by " << killerName << ".";
-		}
-		else if (attackerCreature->hasSkill("force_title_jedi_rank_02") && player->hasSkill("combat_bountyhunter_investigation_03")) {
-			zBroadcast <<"\\#ffe100 " << playerName << ", a bounty hunter, has been slain by -REDACTED-, a Jedi";
-		}
-		else if (attackerCreature->hasSkill("combat_bountyhunter_investigation_03") && player->hasSkill("force_title_jedi_rank_02")) {
+		} else if (attackerMissionID == playerID) { // Successful BH mission announcements are made elsewhere
 			return;
-		}
-		//Only spout the GCW message if the players involved are not in a duel, and are not BH/Jedi
-		else {
+		} else if ((attackerCreature->getFactionStatus() != FactionStatus::OVERT || player->getFactionStatus() != FactionStatus::OVERT) && player->hasSkill("combat_bountyhunter_investigation_03")) {
+			if (attackerCreature->hasSkill("force_title_jedi_rank_02")) { // Failed Jedi mission
+				zBroadcast <<"\\#ffe100 " << playerName << ", a bounty hunter, has been slain by -REDACTED-, a Jedi";
+			} else {  // Failed non-Jedi mission
+				zBroadcast <<"\\#ffe100 " << playerName << ", a bounty hunter, has been slain by their target.";
+			}
+		} else { //Only spout the GCW message if the players involved are not in a duel, and are not BH/Target.  Situations where the target kills a BH and both are overt will unfortunately also get called in this section.
+			if (attackerCreature->isRebel()) {
+				killerFaction = "Rebel";
+				killerAllegiance = "the Rebel Alliance";
+			} else if (attackerCreature->isImperial()) {
+				killerFaction = "Imperial";
+				killerAllegiance = "the Empire";
+			} else {
+				killerFaction = "Civilian";
+				killerAllegiance = "an unknown faction";
+			}
+
+			if (player->isRebel()) {
+				playerFaction = "Rebel";
+				playerAllegiance = "the Rebel Alliance";
+			} else if (player->isImperial()) {
+				playerFaction = "Imperial";
+				playerAllegiance = "the Empire";
+			} else {
+				playerFaction = "Civilian";
+				playerAllegiance = "an unknown faction";
+			}
+
 			String playerLastName = player->getLastName();
 			String playerRankName;
 			StringBuffer trophyBuffer;
@@ -1407,18 +1410,13 @@ void PlayerManagerImplementation::killPlayer(TangibleObject* attacker, CreatureO
 					return;
 				}
 			}
-		
+
 			zBroadcast <<"\\#e28eff A win for " << killerAllegiance << "!  In this latest report from the Galactic Civil War, " << killerName << " (" << killerFaction << ") has killed the " << playerFaction << " known as " << playerName << ".";
 			
 		}
 
 		ghost->getZoneServer()->getChatManager()->broadcastGalaxy(NULL, zBroadcast.toString());
-
-
 	}
-
-}
-
 }
 
 void PlayerManagerImplementation::sendActivateCloneRequest(CreatureObject* player, int typeofdeath) {
@@ -6010,7 +6008,7 @@ bool PlayerManagerImplementation::doBurstRun(CreatureObject* player, float hamMo
 	}
 
 	if (zone->getZoneName() == "dungeon1") {
-		player->sendSystemMessage("@combat_effects:burst_run_space_dungeon"); // The artificial gravity makes burst running impossible here.
+		player->sendSystemMessage("Burst run is not possible here.");
 		return false;
 	}
 

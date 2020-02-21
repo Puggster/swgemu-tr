@@ -1,7 +1,7 @@
 enzyme_2_3 = {
 	minimumLevel = 0,
 	maximumLevel = -1,
-	customObjectName = "",
+	customObjectName = "Lyase Enzymes [Violet]",
 	directObjectTemplate = "object/tangible/loot/beast/enzyme_2.iff",
 	craftingValues = {
 		{"enzyme_color",3,4,0},

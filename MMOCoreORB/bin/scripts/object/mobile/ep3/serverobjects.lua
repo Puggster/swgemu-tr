@@ -9,4 +9,5 @@ includeFile("mobile/ep3/ep3_wke_civilian_03.lua")
 includeFile("mobile/ep3/ep3_wke_lolo.lua")
 includeFile("mobile/ep3/ep3_etyyy_wrelaac.lua")
 includeFile("mobile/ep3/wookiee_spirit_healer_01.lua")
-
+includeFile("mobile/ep3/ep3_blackscale_captain_beshk.lua")
+includeFile("mobile/ep3/ep3_clone_relics_mort.lua")

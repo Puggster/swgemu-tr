@@ -356,6 +356,12 @@ tatooine_destroy_missions = {
 			maxDifficulty = 36,
 			size = 25,
 		},
+		{
+			lairTemplateName = "tatooine_mutant_dragonet_dragonet_neutral_medium",
+			minDifficulty = 73,
+			maxDifficulty = 77,
+			size = 35,
+		}
 	}
 }
 

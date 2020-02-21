@@ -12,6 +12,7 @@
 #include "server/zone/managers/director/DirectorManager.h"
 #include "server/zone/Zone.h"
 #include "server/zone/managers/director/ScreenPlayTask.h"
+#include "server/chat/ChatManager.h"
 
 const char LuaSceneObject::className[] = "LuaSceneObject";
 
@@ -89,6 +90,10 @@ Luna<LuaSceneObject>::RegType LuaSceneObject::Register[] = {
 		{ "info", &LuaSceneObject::info },
 		{ "getPlayersInRange", &LuaSceneObject::getPlayersInRange },
 		{ "isInNavMesh", &LuaSceneObject::isInNavMesh },
+
+		// Tarkin's Revenge
+		{ "broadcastGalaxy", &LuaSceneObject::broadcastGalaxy },
+		{ "getQuaternionElement", &LuaSceneObject::getQuaternionElement },
 		{ 0, 0 }
 
 };
@@ -857,4 +862,47 @@ int LuaSceneObject::isInNavMesh(lua_State* L) {
 	lua_pushboolean(L, val);
 
 	return 1;
+}
+
+/*
+* Tarkin's Revenge
+* Broadcast a message to the galaxy where the scene object resides
+* lua: SceneObject(pObject):broadcastGalaxy(messageString)
+*/
+
+int LuaSceneObject::broadcastGalaxy(lua_State* L) {
+	String messageString = lua_tostring(L, -1);
+	
+	if (messageString != "") {
+		realObject->getZoneServer()->getChatManager()->broadcastGalaxy(NULL, messageString);
+	}
+	return 1;
+}
+
+/*
+* Tarkin's Revenge
+* Return a quaternion element (ow, ox, oy, or oz)
+* lua: SceneObject(pObject):getQuaternionElement("ow")
+*/
+
+int LuaSceneObject::getQuaternionElement(lua_State* L) {
+	String element = lua_tostring(L, -1);
+
+	float posX = realObject->getPositionX(), posZ = realObject->getPositionZ(), posY = realObject->getPositionY();
+	Quaternion* direction = realObject->getDirection();
+		
+	if (element == "ow") {
+		lua_pushnumber(L, direction->getW());
+	} else if (element == "ox") {
+		lua_pushnumber(L, direction->getX());		
+	} else if (element == "oy") {
+		lua_pushnumber(L, direction->getY());		
+	} else if (element == "oz") {
+		lua_pushnumber(L, direction->getZ());		
+	} else {
+		lua_pushnil(L);
+		return 0;	
+	}
+	
+	return 1;		
 }

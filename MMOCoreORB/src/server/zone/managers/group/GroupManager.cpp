@@ -15,6 +15,7 @@
 
 #include "server/zone/managers/object/ObjectManager.h"
 #include "server/zone/managers/player/PlayerManager.h"
+#include "server/zone/managers/director/DirectorManager.h"
 #include "server/chat/ChatManager.h"
 
 #include "server/chat/StringIdChatParameter.h"
@@ -96,6 +97,25 @@ void GroupManager::inviteToGroup(CreatureObject* leader, CreatureObject* target)
 		return;
 	}
 
+	// Tarkin's Revenge Arena System
+	if (leader->isPlayerCreature()) {
+		ManagedReference<PlayerObject*> leaderGhost = leader->getPlayerObject();
+
+		if (leaderGhost->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "") {
+			leader->sendSystemMessage("You cannot group while fighting in an arena.");
+			return;
+		}
+
+		if (target->isPlayerCreature()) {
+			ManagedReference<PlayerObject*> targetGhost = target->getPlayerObject();
+
+			if (targetGhost->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "") {
+				leader->sendSystemMessage("Arena contestants are not allowed to group.");
+				return;
+			}
+		}
+	}
+
 	target->updateGroupInviterID(leader->getObjectID());
 
 	StringIdChatParameter stringId;
@@ -136,6 +156,25 @@ void GroupManager::joinGroup(CreatureObject* player) {
 		return;
 
 	CreatureObject* inviter = cast<CreatureObject*>( object.get());
+
+	// Tarkin's Revenge Arena System
+	ManagedReference<PlayerObject*> inviterGhost = inviter->getPlayerObject();
+	if (inviterGhost->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "") {
+		inviter->sendSystemMessage("Arena contestants are not allowed to group.");
+		if (player->isPlayerCreature()) {
+			player->sendSystemMessage("Arena contestants are not allowed to group.");
+			return;
+		}
+	}
+
+	if (player->isPlayerCreature()) {
+	ManagedReference<PlayerObject*> targetGhost = player->getPlayerObject();
+		if (targetGhost->getScreenPlayData("ToTheDeathScreenplay", "Fighter:") != "") {
+			player->sendSystemMessage("Arena contestants are not allowed to group.");
+			return;
+		}
+	}
+
 	GroupObject* group = NULL;
 
 	Locker clocker(inviter, player);

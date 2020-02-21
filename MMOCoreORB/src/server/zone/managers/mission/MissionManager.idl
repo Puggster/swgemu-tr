@@ -91,12 +91,12 @@ class MissionManager extends Observer implements Logger {
 
 	private native void populateMissionList(MissionTerminal missionTerminal, CreatureObject player, int counter);
 
-	private native void randomizeGeneralTerminalMissions(CreatureObject player, int counter, boolean slicer);
-	private native void randomizeArtisanTerminalMissions(CreatureObject player, int counter, boolean slicer);
-	private native void randomizeEntertainerTerminalMissions(CreatureObject player, int counter, boolean slicer);
-	private native void randomizeScoutTerminalMissions(CreatureObject player, int counter, boolean slicer);
+	private native void randomizeGeneralTerminalMissions(CreatureObject player, int counter, boolean slicer, float infamy);
+	private native void randomizeArtisanTerminalMissions(CreatureObject player, int counter, boolean slicer, float infamy);
+	private native void randomizeEntertainerTerminalMissions(CreatureObject player, int counter, boolean slicer, float infamy);
+	private native void randomizeScoutTerminalMissions(CreatureObject player, int counter, boolean slicer, float infamy);
 	private native void randomizeBountyTerminalMissions(CreatureObject player, int counter);
-	private native void randomizeFactionTerminalMissions(CreatureObject player, int counter, boolean slicer, final unsigned int faction);
+	private native void randomizeFactionTerminalMissions(CreatureObject player, int counter, boolean slicer, float infamy, final unsigned int faction);
 
 	private native void randomizeGenericBountyMission(CreatureObject player, MissionObject mission, final unsigned int faction, Vector<PlayerBounty> potentialTargets);
 	private native void randomizeGenericCraftingMission(CreatureObject player, MissionObject mission, final unsigned int faction);
@@ -142,12 +142,14 @@ class MissionManager extends Observer implements Logger {
 	private native int getDeliverMissionNumberOfMissions(final unsigned int faction);
 	private native int getDeliverMissionSpawnType(final unsigned int faction);
 
-	public native void addPlayerToBountyList(unsigned long targetId, int reward);
+	public native void addPlayerToBountyList(unsigned long targetId, int reward, int type);
 	public native void removePlayerFromBountyList(unsigned long targetId);
-	public native void updatePlayerBountyReward(unsigned long targetId, int reward);
+	public native void updatePlayerBountyReward(unsigned long targetId, int reward, int type);
+	public native void updatePlayerBountyType(unsigned long targetId, int type);
 	public native void updatePlayerBountyOnlineStatus(unsigned long targetId, boolean status);
 	public native void completePlayerBounty(unsigned long targetId, unsigned long bountyHunter);
 	public native void failPlayerBountyMission(unsigned long bountyHunter);
+	public native int getPlayerBountyType(unsigned long targetId);
 
 	@local
 	@dereferenced

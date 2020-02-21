@@ -553,6 +553,7 @@ includeFile("groups/tarkin_custom/enzymes/lyase_enzymes_8.lua")
 includeFile("groups/tarkin_custom/enzymes/lyase_enzymes_9.lua")
 includeFile("groups/tarkin_custom/enzymes/enzyme_elements.lua")
 includeFile("groups/tarkin_custom/enzymes/creature_eggs.lua")
+includeFile("groups/tarkin_custom/recycler_parts.lua")
 
 --Wedding Event
 includeFile("groups/tarkin_custom/wedding_scav_hunt/wed_scav_item_1.lua")

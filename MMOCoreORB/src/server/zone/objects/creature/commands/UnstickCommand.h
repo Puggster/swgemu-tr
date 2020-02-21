@@ -49,6 +49,11 @@ public:
 			player->sendSystemMessage("You cannot unstick while mounted.");
 			return GENERALERROR;
 		}
+
+		if (player->getParent() != nullptr) {
+			player->sendSystemMessage("You need to be outside to use the unstick command.");
+			return GENERALERROR;
+		}
  		player->initializePosition(player->getPositionX() + 10, player->getPositionZ() + 10, player->getPositionY() + 10);
  		zone->transferObject(player, 1, true);
  		player->setPosture(CreaturePosture::UPRIGHT);

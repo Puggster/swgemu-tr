@@ -231,8 +231,13 @@ class PlayerObject extends IntangibleObject {
 
 	protected float visibility;
 
+	protected float infamy;
+
 	@dereferenced
 	protected Time lastVisibilityUpdateTimestamp;
+
+	@dereferenced
+	protected Time lastInfamyUpdateTimestamp;
 
 	@dereferenced
 	protected Time lastBhPvpCombatActionTimestamp;
@@ -361,6 +366,9 @@ class PlayerObject extends IntangibleObject {
 		visibility = 0;
 		lastVisibilityUpdateTimestamp.updateToCurrentTime();
 
+		infamy = 0;
+		lastInfamyUpdateTimestamp.updateToCurrentTime();
+
 		lastBhPvpCombatActionTimestamp.updateToCurrentTime();
 		lastGcwPvpCombatActionTimestamp.updateToCurrentTime();
 
@@ -426,6 +434,8 @@ class PlayerObject extends IntangibleObject {
 	public native void unload();
 
 	public native int calculateBhReward();
+
+	public native int calculateBhInfamyReward();
 
 	@local
 	public native void loadTemplateData(SharedObjectTemplate templateData);
@@ -1654,9 +1664,22 @@ class PlayerObject extends IntangibleObject {
 		lastVisibilityUpdateTimestamp.updateToCurrentTime();
 	}
 
+	public float getInfamy() {
+		return infamy;
+	}
+
+	public void setInfamy(float value) {
+		infamy = value;
+		lastInfamyUpdateTimestamp.updateToCurrentTime();
+	}
+
 	@dereferenced
 	@local
 	public native Time getLastVisibilityUpdateTimestamp();
+
+	@dereferenced
+	@local
+	public native Time getLastInfamyUpdateTimestamp();
 
 	@dereferenced
 	@local

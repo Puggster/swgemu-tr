@@ -13,6 +13,8 @@
 #include "templates/tangible/ContainerTemplate.h"
 #include "server/zone/objects/creature/ai/AiAgent.h"
 #include "server/zone/objects/player/PlayerObject.h"
+#include "server/zone/objects/manufactureschematic/craftingvalues/CraftingValues.h"
+#include "server/zone/packets/scene/AttributeListMessage.h"
 
 void ContainerImplementation::initializeTransientMembers() {
 	TangibleObjectImplementation::initializeTransientMembers();
@@ -55,7 +57,7 @@ void ContainerImplementation::fillObjectMenuResponse(ObjectMenuResponse* menuRes
 	TangibleObjectImplementation::fillObjectMenuResponse(menuResponse, player);
 
 	if (checkContainerPermission(player, ContainerPermissions::MOVECONTAINER && getParent().get() != NULL &&
-			getParent().get()->checkContainerPermission(player, ContainerPermissions::MOVEOUT) && !(_this.getReferenceUnsafeStaticCast()->isRecycleToolObject()) && !(_this.getReferenceUnsafeStaticCast()->isAntiDecayKitObject())))
+			getParent().get()->checkContainerPermission(player, ContainerPermissions::MOVEOUT) && !(_this.getReferenceUnsafeStaticCast()->isRecycleToolObject()) && !(_this.getReferenceUnsafeStaticCast()->isAntiDecayKitObject()) && !(_this.getReferenceUnsafeStaticCast()->isReverseEngineeringTool())))
 
 		menuResponse->addRadialMenuItem(50, 3, "@base_player:set_name"); //Set Name
 

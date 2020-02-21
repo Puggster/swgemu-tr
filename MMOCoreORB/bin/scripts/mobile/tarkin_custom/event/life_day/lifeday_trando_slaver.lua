@@ -1,7 +1,7 @@
 lifeday_trando_slaver = Creature:new {
 	customName = "a trandoshan slaver",
 	socialGroup = "slaver",
-	faction = "slaver",
+	faction = "",
 	level = 15,
 	chanceHit = 0.31,
 	damageMin = 160,

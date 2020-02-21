@@ -386,6 +386,12 @@ talus_destroy_missions = {
 			maxDifficulty = 33,
 			size = 25,
 		},
+		{
+			lairTemplateName = "talus_mutant_mire_marauder_lair_neutral_medium",
+			minDifficulty = 73,
+			maxDifficulty = 77,
+			size = 35,
+		}
 	}
 }
 

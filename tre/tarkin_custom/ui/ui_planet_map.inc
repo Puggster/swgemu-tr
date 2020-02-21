@@ -696,6 +696,28 @@ parent.treebg.enabled=visible'
 							</Page>
 							<Page
 								BackgroundColor='#FFFFFF'
+								Name='coronet_underground'
+								OpacityRelativeMin='0.50'
+								PackLocation='nfn,nfn'
+								PackSize='a,a'
+								RStyleDefault='rs_default'
+								ScrollExtent='485,440'
+								Size='485,440'
+								Visible='false'
+							>
+								<Image
+									BackgroundColor='#FFFFFF'
+									Name='a'
+									PackSize='a,a'
+									ScrollExtent='485,440'
+									Size='485,440'
+									SourceRect='0,0,4096,4096'
+									SourceResource='ui_map_coronet_underground'
+									VisualEditLock='true'
+								/>
+							</Page>
+							<Page
+								BackgroundColor='#FFFFFF'
 								Name='dreamland'
 								OpacityRelativeMin='0.50'
 								PackLocation='nfn,nfn'
