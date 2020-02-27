@@ -2266,10 +2266,19 @@ int MissionManagerImplementation::getRealBountyReward(CreatureObject* creo, Play
 		if (player == nullptr)
 			return 0;
 
-		if (player->getJediState() >= 4)
-			return 50000;
-		else
-			return 25000;
+		int missionType = bounty->getType();
+
+		if (missionType == 2) { // Infamy Missions
+			if (player->getInfamy() >= 1200)
+				return 50000;
+			else
+				return 25000;
+		} else { // Jedi Missions
+			if (player->getJediState() >= 4)
+				return 50000;
+			else
+				return 25000;
+		}
 	}
 	return bounty->getReward();
 }

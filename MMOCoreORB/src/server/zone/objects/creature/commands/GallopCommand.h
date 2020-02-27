@@ -26,19 +26,6 @@ public:
 			return INVALIDLOCOMOTION;
 
 		ManagedReference<SceneObject*> parent = creature->getParent().get();
-		Creature* creatureParent = cast<Creature*>(parent.get());
-
-		if (creatureParent->isAiAgent()) {
-		AiAgent* agent = cast<AiAgent*>(creatureParent);
-
-			creature->sendSystemMessage("PvpStatusBitmask: " + String::valueOf(agent->getPvpStatusBitmask())); //debug
-			creature->sendSystemMessage("CreatureBitmask: " + String::valueOf(agent->getCreatureBitmask())); //debug
-
-			ManagedReference<PetControlDevice*> pcd = agent->getControlDevice().get().castTo<PetControlDevice*>();
-
-			creature->sendSystemMessage("petType: " + String::valueOf(pcd->getPetType())); //debug
-
-		}
 
 		if (parent == NULL || !parent->isMount()) {
 			creature->sendSystemMessage("@combat_effects:not_mounted"); // You cannot perform this command without a mount.
