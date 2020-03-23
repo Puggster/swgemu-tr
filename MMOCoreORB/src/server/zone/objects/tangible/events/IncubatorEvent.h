@@ -184,11 +184,11 @@ public:
 			}
 
 			if(mod == "1") {
-				if (level > 1) {
+				if (level > 4) {
 					level -= 1;
 					petdeed->setLevel((int)level);
 				} else {
-					modDesc = "Pet level was already the lowest level possible";
+					modDesc = "Incubation level capped at level 4";
 				}
 			} else if(mod == "2") {
 				if (armor < 1) {

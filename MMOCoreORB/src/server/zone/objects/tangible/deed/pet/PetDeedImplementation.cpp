@@ -545,9 +545,9 @@ bool PetDeedImplementation::adjustPetStats(CreatureObject* player, CreatureObjec
 	}
 
 	int ham = DnaManager::instance()->valueForLevel(DnaManager::HAM_LEVEL,oldLevel);
-	health = ham;
-	action = ham;
-	mind = ham;
+	health = ham / 3.0;
+	action = ham / 3.0;
+	mind = ham / 3.0;
 	regen = DnaManager::instance()->valueForLevel(DnaManager::REG_LEVEL,oldLevel);
 	float dps = DnaManager::instance()->valueForLevel(DnaManager::DPS_LEVEL,oldLevel);
 	damageMin = round((dps * 2.0) * 0.5);
